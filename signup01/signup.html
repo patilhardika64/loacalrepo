@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="stylesheet" href="style1.css">
+    <title>Modern Login Page</title>
+    <script src="https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"></script>
+</head>
+
+<body>
+
+    <div class="container" id="container">
+        <div class="form-container sign-up">
+            <form>
+                <h1>Create Account</h1>
+                <!-- <div class="social-icons">
+                    <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div> -->
+                <!-- <span>or use your email for registeration</span> -->
+                <input type="text"  id= "username" name="username" placeholder="username">
+                <input type="email" id="email" name="email" placeholder="E-mail">
+                <input type="password" id="password" name="password" placeholder="Password">
+                <!-- <button>Sign Up as Student</button> -->
+                <input type="submit" id="signup" name="signup_submit" value="Sign Up as Student">
+                <input type="submit" id="signUp" name="signup_submit" value="Sign Up as Teacher">
+            </form>
+        </div>
+        <div class="form-container sign-in">
+            <form>
+                <h1>Sign In</h1>
+                <!-- <div class="social-icons">
+                    <a href="#" class="icon"><i class="fa-brands fa-google-plus-g"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-github"></i></a>
+                    <a href="#" class="icon"><i class="fa-brands fa-linkedin-in"></i></a>
+                </div> -->
+                <!-- <span>or use your email password</span> -->
+                <input type="email" id="sign_email" name="mail" placeholder="Email" required>
+                <input type="password" id="sign_password"   placeholder="Password" required>
+                <a  class="forget" href="#">Forget Your Password?</a>
+            </a> 
+            <a  id="signin"class="link" href="../dashtch1/teacherpg.html">Sign In as Teacher</a>
+            <a id="signIn" class="link" href="../dashboard1/dashboard.html"> Sign In as Student</a>
+            </form>
+
+        </div>
+        <div class="toggle-container">
+            <div class="toggle">
+                <div class="toggle-panel toggle-left">
+                    <h1>Welcome Back!</h1>
+                    <p>Enter your personal details and join with us!!</p>
+                    <button class="b-sign-in" id="login">Sign In</button>
+                </div>
+                <div class="toggle-panel toggle-right">
+                    <h1>Hello, Friend!</h1>
+                    <p>Register with your personal details and join with us!!</p>
+                    <button class="b-sign-up" id="register">Sign Up</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+        import{getDatabase, ref, set, get, child,} from "https://www.gstatic.com/firebasejs/10.9.0/firebase-database.js";
+        import { getAuth, createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-auth.js";
+        // import * as dcodeIO from "https://cdn.jsdelivr.net/npm/bcryptjs@2.4.3/dist/bcrypt.min.js"
+  
+     // Your web app's Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyAiGwtsRvFDmmFfUVhOm9GPJMXL07BOm04",
+            authDomain: "fir-frontend-c00f3.firebaseapp.com",
+            projectId: "fir-frontend-c00f3",
+            storageBucket: "fir-frontend-c00f3.appspot.com",
+            messagingSenderId: "710045077420",
+            appId: "1:710045077420:web:c3cde35c95a2de19c23409"
+            };
+
+           // Initialize Firebase
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth();
+      const database = getDatabase(app);
+
+      document.getElementById("signup").addEventListener("click", function(e) {
+        e.preventDefault();
+        
+        var username = document.getElementById("username").value;
+        var email = document.getElementById("email").value;
+        var password = document.getElementById("password").value;
+
+        console.log(dcodeIO.bcrypt.hashSync(password,10))
+
+        createUserWithEmailAndPassword(auth, email, password)
+          .then((userCredential) => {
+            const user = userCredential.user;
+
+            // Save user data to database
+            set(ref(database, 'users/' + user.uid), {
+              username: username,
+              email: email,
+              password: password
+            })
+            .then(() => {
+              // Data saved successfully
+              alert("User created successfully");
+            })
+            .catch((error) => {
+              alert("error occured");
+            });
+          })
+              
+        .catch((error) => {
+          const errorCode= error.code;
+          const errorMessage= error.message;
+          alert(errorMessage);
+        });
+      
+        // Reset form
+        document.getElementById("signup").reset();
+      });
+       
+       
+      
+    </script>
+    <script src="script.js"></script>
+</body>   
+</html>
